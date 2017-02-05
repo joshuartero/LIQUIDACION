@@ -16,6 +16,7 @@ public class FRM_INFORMACION extends javax.swing.JFrame {
      */
     public FRM_INFORMACION() {
         initComponents();
+        this.setLocationRelativeTo(this);
     }
 
     /**
