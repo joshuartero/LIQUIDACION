@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Calendar;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -23,6 +24,7 @@ public class JD_FLC extends javax.swing.JDialog {
     Connection con=cConexion.getCon();
     Statement st;   ResultSet rs;
     DefaultTableModel modelo;
+    DefaultListModel modeloLista;
     
     public JD_FLC(JIF_Formato_Liquidacion_Campo jifflc, boolean modal) {
         super(JOptionPane.getFrameForComponent(jifflc), modal);
@@ -30,14 +32,27 @@ public class JD_FLC extends javax.swing.JDialog {
         initComponents();
         
         modelo=(DefaultTableModel) jTable1.getModel();
+        modeloLista=new DefaultListModel();
+        jList1.setModel(modeloLista);
         
         setLocationRelativeTo(this);
     }
     
-    void generarCodigo()//F12-03-25
+    void listarPuntos()
     {   try
         {   st=con.createStatement();
-            rs=st.executeQuery("SELECT MAX(CODIGO) FROM FLC");            
+            rs=st.executeQuery("SELECT PUNTO FROM PUNTO WHERE CODIGOFLC='"+jTextField11.getText()+"'");
+            modeloLista.removeAllElements();
+            while(rs.next())
+            {   modeloLista.addElement(rs.getString(1));
+            }            
+        }
+        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+    }
+    
+    void generarCodigo()//F12-03-25
+    {   try
+        {   rs=st.executeQuery("SELECT MAX(CODIGO) FROM FLC");            
             if(rs.next())
             {   if(rs.getString(1)!=null)
                 {   String codigo="F12-03-"+(Integer.parseInt(rs.getString(1).substring(7, 9))+1);
@@ -448,7 +463,7 @@ public class JD_FLC extends javax.swing.JDialog {
         if(jdap.isVisible()==false)
         {   
             restablecerTabla();
-//            listarArrayPuntos();
+            listarPuntos();
 //            mostrarArrayPuntos();
 //            ajustarAnchoColumas();
 //            agruparPuntos();
@@ -492,8 +507,7 @@ public class JD_FLC extends javax.swing.JDialog {
     
     void guardarCambiosDatosGenerales()
     {   try
-        {   st=con.createStatement();
-            st.executeUpdate("UPDATE FLC SET UNDNEGOCIO='"+jTextField1.getText()+"'"
+        {   st.executeUpdate("UPDATE FLC SET UNDNEGOCIO='"+jTextField1.getText()+"'"
                 + ",CONTRATISTA='"+jTextField2.getText()+"'"
                 + ",OM_NRO='"+jTextField3.getText()+"'"
                 + ",PEDIDOABIERTO_NRO='"+jTextField4.getText()+"'"

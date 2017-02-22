@@ -319,24 +319,39 @@ public class JD_Registrar_Punto extends javax.swing.JDialog {
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(!camposVacios2())            
-        {   if(buscarPuntoEnArray())
-            {   
-//                JOptionPane.showMessageDialog(this, "ESE PUNTO YA SE REGISTRO ");
-//                jTextField1.requestFocus();
+        {   try
+            {   st=con.createStatement();
+                String codigoPunto=generarCodigoPunto();
+                //Registramos el punto
+                st.executeUpdate("INSERT INTO PUNTO VALUES('"+codigoPunto+"',"
+                        + "'"+jTextField1.getText()+"','"+jTextField5.getText()+"')");
+                //Registramos los servicios de ese punto                
+                for(int fila=0; fila<jTable1.getRowCount(); fila++)
+                {   st.executeUpdate("INSERT INTO PUNTO_SERVICIO VALUES "
+                        + "('"+codigoPunto+"','"+(String)jTable1.getValueAt(fila, 0)+"',"
+                        + "'"+jTable1.getValueAt(fila, 3)+"')");
+                }                                       
+                JOptionPane.showMessageDialog(this, "PUNTO REGISTRADO CON SUS RESPECTIVOS SERVICIOS");
             }
-            else
-            {   //Llenar arrayServicios
-//                ArrayList arrayServicios=new ArrayList();
-//                for(int i=0;i<jTable1.getRowCount();i++)
-//                    arrayServicios.add(new Servicio((String)jTable1.getValueAt(i, 0), (String)jTable1.getValueAt(i, 1), 
-//                            (String)jTable1.getValueAt(i, 2), Integer.parseInt((String)jTable1.getValueAt(i, 3))));
-//                jifflc.arrayPuntos.add(new Punto( jTextField1.getText(), jTextField5.getText(), arrayServicios ));            
-//                jTextField1.setText("");    jTextField2.setText("");    jTextField3.setText("");
-//                jTextField4.setText("");    jTextField6.setText("");    limpiarTabla();
-//                JOptionPane.showMessageDialog(this, "PUNTO Y SUS SERVICIOS REGISTRADO CON EXITO");                
-            }
+            catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+    
+    String generarCodigoPunto()
+    {   String codigo="";
+        try
+        {   rs=st.executeQuery("SELECT MAX(CODIGO) FROM PUNTO");            
+            if(rs.next())
+            {   if(rs.getString(1)!=null)
+                {   codigo=""+(Integer.parseInt(rs.getString(1).substring(1, 10))+1);                    
+                }
+                else
+                    codigo="P100000001";
+            }            
+        }
+        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+        return codigo;
+    }
     
     public void limpiarTabla() 
     {   int filas = jTable1.getRowCount();
