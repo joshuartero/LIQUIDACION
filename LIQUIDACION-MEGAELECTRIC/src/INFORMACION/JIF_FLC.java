@@ -7,6 +7,7 @@ import TABLA.HEADER.ColumnGroup;
 import TABLA.HEADER.GroupableTableHeader;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -240,6 +241,16 @@ public class JIF_FLC extends javax.swing.JInternalFrame {
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("PUNTOS"));
 
+        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jList1MouseClicked(evt);
+            }
+        });
+        jList1.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                jList1ValueChanged(evt);
+            }
+        });
         jScrollPane2.setViewportView(jList1);
 
         jButton3.setText("ELIMINAR");
@@ -396,17 +407,25 @@ public class JIF_FLC extends javax.swing.JInternalFrame {
         if(jList1.getSelectedIndex()==-1)    
             JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN PUNTO DE LA LISTA");
         else
-        {   JD_Modificar_Punto jdrp=new JD_Modificar_Punto(this, true);
-            jdrp.jTextField1.setText(jList1.getSelectedValue());
-            jdrp.setEnabled(false);
-            jdrp.listarServiciosDePunto();            
-            jdrp.setVisible(true);            
+        {   //JD_Modificar_Punto jdrp=new JD_Modificar_Punto(this, true);
+//            jdrp.jTextField1.setText(jList1.getSelectedValue());
+//            jdrp.setEnabled(false);
+//            jdrp.listarServiciosDePunto();            
+//            jdrp.setVisible(true);            
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         
     }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+        JOptionPane.showMessageDialog(this,jList1.getSelectedIndex());
+    }//GEN-LAST:event_jList1MouseClicked
+
+    private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
+        JOptionPane.showMessageDialog(this,jList1.getSelectedIndex());
+    }//GEN-LAST:event_jList1ValueChanged
 
     void totalEjecutado()
     {   for(int fila=0; fila< jTable1.getRowCount(); fila++)

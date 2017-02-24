@@ -343,7 +343,7 @@ public class JD_Registrar_Punto extends javax.swing.JDialog {
         {   rs=st.executeQuery("SELECT MAX(CODIGO) FROM PUNTO");            
             if(rs.next())
             {   if(rs.getString(1)!=null)
-                {   codigo=""+(Integer.parseInt(rs.getString(1).substring(1, 10))+1);                    
+                {   codigo="P"+(Integer.parseInt(rs.getString(1).substring(1, 10))+1);                    
                 }
                 else
                     codigo="P100000001";

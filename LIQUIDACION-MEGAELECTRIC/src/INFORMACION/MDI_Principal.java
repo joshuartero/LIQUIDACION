@@ -10,11 +10,15 @@ import javax.swing.JOptionPane;
 public class MDI_Principal extends javax.swing.JFrame {
     
     CGeneral cgeneral=new CGeneral();
-    JIF_Formato_Liquidacion_Campo jif=null;
+    JIF_Formato_Liquidacion_Campo jiffl=null;
+    JIF_Mantenimiento_Servicios jifms=null;
+    JIF_Mantenimiento_Material jifmm=null;
+    
+    JIF_Mantenimiento_Material jif=null;
     
     public MDI_Principal() {
         initComponents();
-//        setExtendedState(MAXIMIZED_BOTH);
+        setExtendedState(MAXIMIZED_BOTH);
         setSize(1300,640);        
     }
 
@@ -97,9 +101,9 @@ public class MDI_Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-       if( cgeneral.estaCerrado(jif, desktopPane) )
-        {   jif=new JIF_Formato_Liquidacion_Campo();
-            cgeneral.mostrarCentrar(jif, desktopPane);    
+       if( cgeneral.estaCerrado(jiffl, desktopPane) )
+        {   jiffl=new JIF_Formato_Liquidacion_Campo();
+            cgeneral.mostrarCentrar(jiffl, desktopPane);    
         }   
         else    JOptionPane.showMessageDialog(null,"LA VENTANA "+jif.getTitle()+" YA ESTA ABIERTA"); 
     }//GEN-LAST:event_jMenuItem2ActionPerformed
@@ -112,7 +116,7 @@ public class MDI_Principal extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         if(cgeneral.estaCerrado(jif, desktopPane))
-        {   jif=new JIF_Formato_Liquidacion_Campo();
+        {   jif=new JIF_Mantenimiento_Material();
             cgeneral.mostrarCentrar(jif, desktopPane);    
         }   
         else    JOptionPane.showMessageDialog(null,"LA VENTANA "+jif.getTitle()+" YA ESTA ABIERTA");         

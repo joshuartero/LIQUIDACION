@@ -1,13 +1,10 @@
 package INFORMACION;
 
-import CLASES.Punto;
-import CLASES.Servicio;
 import CLASES.CCONEXION;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,39 +17,41 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
     CCONEXION cConexion=new CCONEXION(); 
     Connection con=cConexion.getCon();
     Statement st;   ResultSet rs;
-    JIF_FLC jifflc;
+    JD_FLC jdflc;
     DefaultTableModel modelo;    
     
-    public JD_Modificar_Punto(JIF_FLC jifflc, boolean modal) {
-        super(JOptionPane.getFrameForComponent(jifflc), modal);
+    public JD_Modificar_Punto(JD_FLC jdflc, boolean modal) {
+        super(jdflc, modal);
         initComponents();
-        this.jifflc=jifflc;
+        
+        this.jdflc=jdflc;
         setLocationRelativeTo(this);
         modelo=(DefaultTableModel) jTable1.getModel();
-        jTextField5.setText(jifflc.jTextField11.getText());
-        
-        listarServiciosDePunto();
+        jTextField5.setText(jdflc.jTextField11.getText());
     }
     
     void listarServiciosDePunto()
-    {   for(int i=0; i<jifflc.arrayPuntos.size(); i++)
-        {   Punto p=(Punto) jifflc.arrayPuntos.get(i);
-            if(p.getNombre().compareTo(jTextField1.getText())==0)
-            {   ArrayList arrayServicios=p.getArrayServicios();
-                for(int j=0; j<arrayServicios.size(); j++)
-                {   Servicio servicio=(Servicio) arrayServicios.get(j);
-                    Object row[]={servicio.getCodigo(), servicio.getDescripcion(),
-                                  servicio.getUnidad(), servicio.getCantidad()};
-                    modelo.addRow(row);
-                }
+    {   limpiarTabla();
+        try
+        {   st=con.createStatement();
+            rs=st.executeQuery("SELECT S.CODIGO, S.DESCRIPCION, S.UNIDAD, PS.CANTIDAD "
+                + "FROM PUNTO_SERVICIO PS "
+                + "INNER JOIN SERVICIO S ON PS.CODIGOSERVICIO=S.CODIGO "
+                + "INNER JOIN PUNTO P ON PS.CODIGOPUNTO=P.CODIGO "
+                + "WHERE P.PUNTO='"+jTextField1.getText()+"' AND P.CODIGOFLC='"+jTextField5.getText()+"'");
+            while(rs.next())
+            {   Object row[]={rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)};                
+                modelo.addRow(row);
             }
         }
+        catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}
     }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
         jPanel1 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
@@ -74,6 +73,8 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -252,12 +253,39 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setRowHeight(25);
         jScrollPane1.setViewportView(jTable1);
         if (jTable1.getColumnModel().getColumnCount() > 0) {
             jTable1.getColumnModel().getColumn(0).setMaxWidth(100);
             jTable1.getColumnModel().getColumn(2).setMaxWidth(100);
             jTable1.getColumnModel().getColumn(3).setMaxWidth(100);
         }
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jButton5.setText("DEL");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton5)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton5)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -266,10 +294,13 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1)
                     .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -280,7 +311,9 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -330,23 +363,54 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(!camposVacios2())            
-        {   if(buscarPuntoEnArray())
-            {   JOptionPane.showMessageDialog(this, "ESE PUNTO YA SE REGISTRO ");
-                jTextField1.requestFocus();
-            }
-            else
-            {   //Llenar arrayServicios
-                ArrayList arrayServicios=new ArrayList();
-                for(int i=0;i<jTable1.getRowCount();i++)
-                    arrayServicios.add(new Servicio((String)jTable1.getValueAt(i, 0), (String)jTable1.getValueAt(i, 1), 
-                            (String)jTable1.getValueAt(i, 2), Integer.parseInt((String)jTable1.getValueAt(i, 3))));
-                jifflc.arrayPuntos.add(new Punto( jTextField1.getText(), jTextField5.getText(), arrayServicios ));            
-                jTextField1.setText("");    jTextField2.setText("");    jTextField3.setText("");
-                jTextField4.setText("");    jTextField6.setText("");    limpiarTabla();
-                JOptionPane.showMessageDialog(this, "PUNTO Y SUS SERVICIOS REGISTRADO CON EXITO");                
-            }
+        {   actualizar_Y_O_GuardarServicios();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+    
+    void actualizar_Y_O_GuardarServicios()
+    {   //Recorremos toda la tabla
+        for(int fila=0; fila<jTable1.getRowCount(); fila++)
+        {   if(buscarServicioEnPunto((String)jTable1.getValueAt(fila, 0)))
+            {   actualizarServicio((String)jTable1.getValueAt(fila, 3), (String)jTable1.getValueAt(fila, 0));
+            }
+            else
+            {   insertarServicio(jTextField1.getText(), (String)jTable1.getValueAt(fila, 0), (String)jTable1.getValueAt(fila, 3));
+            }
+        }
+        JOptionPane.showMessageDialog(this, "CAMBIOS REALIZADOS CON EXITO");
+    }
+    
+    void actualizarServicio(String cantidad, String codigoServicio)
+    {   try
+        {   st.executeUpdate("UPDATE PUNTO_SERVICIO SET CANTIDAD='"+cantidad+"' "
+                + "WHERE CODIGOPUNTO=(SELECT CODIGO FROM PUNTO WHERE PUNTO='"+jTextField1.getText()+"' "
+                + "AND CODIGOSERVICIO='"+codigoServicio+"');");                        
+        }
+        catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}
+    }
+    
+    void insertarServicio(String punto, String codigoServicio, String cantidad)
+    {   try
+        {   st.executeUpdate("INSERT INTO PUNTO_SERVICIO VALUES "
+                + "( (SELECT CODIGO FROM PUNTO WHERE PUNTO='"+punto+"') ,"
+                + "'"+codigoServicio+"','"+cantidad+"')");
+        }
+        catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}
+    }
+    
+    boolean buscarServicioEnPunto(String codigoServicio)
+    {   boolean encontrado=false;
+        try
+        {   rs=st.executeQuery("SELECT PS.CODIGOSERVICIO FROM PUNTO_SERVICIO PS INNER JOIN PUNTO P "
+                + "ON PS.CODIGOPUNTO=P.CODIGO WHERE P.PUNTO='"+jTextField1.getText()+"';");
+            while(rs.next())
+            {   if(rs.getString(1).compareTo(codigoServicio)==0)
+                    encontrado=true;
+            }            
+        }
+        catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}
+        return encontrado;
+    }
     
     public void limpiarTabla() 
     {   int filas = jTable1.getRowCount();
@@ -355,17 +419,7 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
             filas--;
         }
     } 
-    
-    boolean buscarPuntoEnArray()
-    {   boolean encontrado=false;
-        for(int i=0;i<jifflc.arrayPuntos.size();i++)
-        {   Punto punto=(Punto) jifflc.arrayPuntos.get(i);
-            if(punto.getNombre().compareTo(jTextField1.getText())==0)
-               encontrado=true;            
-        }
-        return encontrado;
-    }
-    
+            
     boolean camposVacios1()
     {   boolean vacio=false;
         if(jTextField2.getText().length()==0)
@@ -417,12 +471,33 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if(jTable1.getSelectedRow()==-1)
+            JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN SERVICIO A ELIMINAR");
+        else
+        {   int opc=JOptionPane.showConfirmDialog(this, "ESTA SEGURO QUE QUIERE ELIMINAR\n"+
+                jTable1.getValueAt(jTable1.getSelectedRow(), 1));
+            if(opc==JOptionPane.YES_OPTION)    
+            {   try
+                {   st.executeUpdate("DELETE FROM PUNTO_SERVICIO WHERE "
+                        + "CODIGOSERVICIO='"+jTable1.getValueAt(jTable1.getSelectedRow(), 0)+"' "
+                        + "AND CODIGOPUNTO=(SELECT CODIGO FROM PUNTO WHERE PUNTO='"+jTextField1.getText()+"')");
+                    listarServiciosDePunto();
+                    JOptionPane.showMessageDialog(this, "SE ELIMINO EL SERVICIO\n"+
+                            jTable1.getValueAt(jTable1.getSelectedRow(), 1));
+                }
+                catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}
+            }
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
         
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -432,6 +507,8 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     public static javax.swing.JTextField jTextField1;
