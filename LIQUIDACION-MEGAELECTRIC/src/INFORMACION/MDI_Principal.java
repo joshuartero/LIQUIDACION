@@ -14,7 +14,7 @@ public class MDI_Principal extends javax.swing.JFrame {
     JIF_Mantenimiento_Servicios jifms=null;
     JIF_Mantenimiento_Material jifmm=null;
     
-    JIF_Mantenimiento_Material jif=null;
+    JIF_Formato_Liquidacion_Campo jif=null;
     
     public MDI_Principal() {
         initComponents();
@@ -116,7 +116,7 @@ public class MDI_Principal extends javax.swing.JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         if(cgeneral.estaCerrado(jif, desktopPane))
-        {   jif=new JIF_Mantenimiento_Material();
+        {   jif=new JIF_Formato_Liquidacion_Campo();
             cgeneral.mostrarCentrar(jif, desktopPane);    
         }   
         else    JOptionPane.showMessageDialog(null,"LA VENTANA "+jif.getTitle()+" YA ESTA ABIERTA");         

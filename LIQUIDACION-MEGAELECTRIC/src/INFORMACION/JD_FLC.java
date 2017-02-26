@@ -41,111 +41,6 @@ public class JD_FLC extends javax.swing.JDialog {
         setLocationRelativeTo(this);
     }
     
-    void mostrarPuntos()
-    {   restablecerTabla();
-        try
-        {   st=con.createStatement();
-            rs=st.executeQuery("SELECT DISTINCT PS.CODIGOPUNTO, P.PUNTO FROM PUNTO_SERVICIO PS INNER JOIN PUNTO P "
-                + "ON PS.CODIGOPUNTO=P.CODIGO WHERE P.CODIGOFLC='"+jTextField11.getText()+"'");            
-            while(rs.next())
-            {   modelo.addColumn(rs.getString(2));//Puntos
-                mostrarServicios(rs.getString(1), rs.getString(2));
-            }     
-            modelo.addColumn("FLECHA 2%");   modelo.addColumn("CUELLOS AMARRES");
-            ajustarAnchoColumas();
-            agruparPuntos();
-            totalEjecutado();
-        }
-        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
-    }
-    
-    void totalEjecutado()
-    {   for(int fila=0; fila< jTable1.getRowCount(); fila++)
-        {   int suma=0;
-            for(int col=5; col< jTable1.getColumnCount()-2; col++)
-            {   if(jTable1.getValueAt(fila, col)!=null)
-                    suma+=Integer.parseInt((String) jTable1.getValueAt(fila, col));
-            }
-            jTable1.setValueAt(suma, fila, 4);
-        }
-    }
-    
-    void mostrarServicios(String codigoPunto, String punto)
-    {   try
-        {   Statement st2=con.createStatement();
-            ResultSet rs2=st2.executeQuery("SELECT PS.CODIGOSERVICIO, S.DESCRIPCION, S.UNIDAD, PS.CANTIDAD FROM "
-                + "PUNTO_SERVICIO PS INNER JOIN SERVICIO S ON PS.CODIGOSERVICIO=S.CODIGO INNER JOIN PUNTO P "
-                + "ON PS.CODIGOPUNTO=P.CODIGO WHERE CODIGOPUNTO='"+codigoPunto+"' AND P.CODIGOFLC='"+jTextField11.getText()+"'");
-            int item=1;
-            while(rs2.next())
-            {   int fila=buscarServicioEnTabla(rs2.getString(2));
-                int posCol=buscarPosicionDePuntoEnColumnasDeTabla(punto);
-                if(fila==-1)//Servicio no esta en tabla
-                {   int col=jTable1.getColumnCount();
-                    Object row[]=new Object[col];
-                    row[0]=item;
-                    row[1]= rs2.getString(1);
-                    row[2]= rs2.getString(2);
-                    row[3]= rs2.getString(3);                    
-                    row[posCol]=rs2.getString(4);
-                    modelo.addRow(row);                    
-                }
-                else//Servicio ESTÁ en tabla
-                   jTable1.setValueAt(rs2.getString(4), fila, posCol);
-                item++;
-            }     
-            
-        }
-        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
-    }
-    
-    int buscarServicioEnTabla(String descripcion)
-    {   int fila=-1;
-        for(int i=0; i<jTable1.getRowCount(); i++)
-        {   if(descripcion.compareTo((String)jTable1.getValueAt(i, 2))==0)
-                fila=i;
-        }
-        return fila;
-    }
-    
-    int buscarPosicionDePuntoEnColumnasDeTabla(String punto)
-    {   int col=-1;
-        for(int i=0; i<jTable1.getColumnCount(); i++)
-        {   if(punto.compareTo((String)jTable1.getColumnName(i))==0)
-                col=i;
-        }
-        return col;
-    }
-    
-    void ajustarAnchoColumas()
-    {   ArrayList<Integer> anchos=new ArrayList<Integer>();
-        anchos.add(50); anchos.add(80);    anchos.add(300);    anchos.add(60); anchos.add(80);
-        for(int i = 0; i < anchos.size(); i++) 
-            jTable1.getColumnModel().getColumn(i).setPreferredWidth(anchos.get(i));
-    }
-    
-    void agruparPuntos()
-    {   TableColumnModel cm = jTable1.getColumnModel();
-        ColumnGroup g_name = new ColumnGroup("Puntos en los que se han instalado en campo (puntos deben coincidir con el croquis presentado)");
-        for(int i=5; i<jTable1.getColumnCount(); i++)
-           g_name.add(cm.getColumn(i));
-        GroupableTableHeader header = (GroupableTableHeader)jTable1.getTableHeader();
-        header.addColumnGroup(g_name);
-    }
-    
-    void listarPuntos()
-    {   modeloLista.removeAllElements();
-        try
-        {   st=con.createStatement();
-            rs=st.executeQuery("SELECT PUNTO FROM PUNTO WHERE "
-                + "CODIGOFLC='"+jTextField11.getText()+"' ORDER BY PUNTO ASC");            
-            while(rs.next())
-            {   modeloLista.addElement(rs.getString(1));
-            }            
-        }
-        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
-    }
-    
     void generarCodigo()//F12-03-25
     {   try
         {   rs=st.executeQuery("SELECT MAX(CODIGO) FROM FLC");            
@@ -221,12 +116,21 @@ public class JD_FLC extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        jPanel11 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jList2 = new javax.swing.JList<>();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
+            }
+        });
 
         jPanel9.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
@@ -435,11 +339,6 @@ public class JD_FLC extends javax.swing.JDialog {
             }
         ));
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
-            }
-        });
         jScrollPane1.setViewportView(jTable1);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("PUNTOS"));
@@ -519,15 +418,42 @@ public class JD_FLC extends javax.swing.JDialog {
 
         jTabbedPane1.addTab("PRELIQUIDACION DE SERVICIOS", jPanel2);
 
+        jPanel11.setBorder(javax.swing.BorderFactory.createTitledBorder("PUNTOS"));
+
+        jScrollPane3.setViewportView(jList2);
+
+        javax.swing.GroupLayout jPanel11Layout = new javax.swing.GroupLayout(jPanel11);
+        jPanel11.setLayout(jPanel11Layout);
+        jPanel11Layout.setHorizontalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel11Layout.setVerticalGroup(
+            jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1051, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(902, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 346, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("PRELIQUIDACION DE MATERIAL NUEVO", jPanel3);
@@ -557,8 +483,6 @@ public class JD_FLC extends javax.swing.JDialog {
         );
 
         jTabbedPane1.addTab("OBSERVACIONES", jPanel5);
-
-        jTabbedPane1.setSelectedIndex(1);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -597,10 +521,6 @@ public class JD_FLC extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-
-    }//GEN-LAST:event_jTable1MouseClicked
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         JD_Registrar_Punto jdap=new JD_Registrar_Punto(this, true);
         jdap.setVisible(true);
@@ -610,13 +530,6 @@ public class JD_FLC extends javax.swing.JDialog {
             mostrarPuntos();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    void restablecerTabla()
-    {   Object dataVector[][]={};
-        Object columnIdentifiers[]={"ITEM", "CODIGO SAP", "DESCRIPCION", "UNIDAD", 
-            "<html><div style=text-align:center>TOTAL<br>EJECUTADO</div></html>"};
-        modelo.setDataVector(dataVector, columnIdentifiers);
-    }
     
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if(jList1.getSelectedIndex()==-1)
@@ -633,51 +546,18 @@ public class JD_FLC extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        switch(jTabbedPane1.getSelectedIndex())
-        {   case 0:
-                guardarCambiosDatosGenerales();
-                break;
-            case 1:
-                guardarPreliquidacionServicios();
-                break;
-        }        
+        guardarCambiosDatosGenerales();
+//        switch(jTabbedPane1.getSelectedIndex())
+//        {   case 0:
+//                guardarCambiosDatosGenerales();
+//                break;
+//            case 1:
+//                guardarPreliquidacionServicios();
+//                break;
+//        }        
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if(jList1.getSelectedIndex()!=-1)
-        {   try
-            {   st.executeUpdate("DELETE FROM PUNTO WHERE PUNTO='"+jList1.getSelectedValue()+"' "
-                    + "AND CODIGOFLC='"+jTextField11.getText()+"'");
-                listarPuntos();
-                mostrarPuntos();
-                JOptionPane.showMessageDialog(this, "PUNTO ELIMINADO CON EXITO");
-            }
-            catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
-        }
-        else JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN PUNTO DE LA LISTA");
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    void listarServicios()
-    {   restablecerTabla();
-        try
-        {   rs=st.executeQuery("SELECT S.CODIGO, S.DESCRIPCION, S.UNIDAD FROM PUNTO_SERVICIO PS "
-                + "INNER JOIN SERVICIO S ON PS.CODIGOSERVICIO=S.CODIGO "
-                + "WHERE CODIGOPUNTO=(SELECT CODIGO FROM PUNTO WHERE PUNTO='"+jList1.getSelectedValue()+"')"); 
-            int item=1;
-            while(rs.next())
-            {   Object row[]={item, rs.getString(1), rs.getString(2), rs.getString(3)};
-                modelo.addRow(row);
-                item++;
-            }
-        }
-        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
-    }
-    
-    void guardarPreliquidacionServicios()
-    {   
-    }
-    
-    void guardarCambiosDatosGenerales()
+     void guardarCambiosDatosGenerales()
     {   try
         {   st.executeUpdate("UPDATE FLC SET UNDNEGOCIO='"+jTextField1.getText()+"'"
                 + ",CONTRATISTA='"+jTextField2.getText()+"'"
@@ -707,6 +587,146 @@ public class JD_FLC extends javax.swing.JDialog {
         else    fechaActual="NULL";             
         return fechaActual;
     }
+     
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if(jList1.getSelectedIndex()!=-1)
+        {   try
+            {   st.executeUpdate("DELETE FROM PUNTO WHERE PUNTO='"+jList1.getSelectedValue()+"' "
+                    + "AND CODIGOFLC='"+jTextField11.getText()+"'");
+                listarPuntos();
+                mostrarPuntos();
+                JOptionPane.showMessageDialog(this, "PUNTO ELIMINADO CON EXITO");
+            }
+            catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+        }
+        else JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN PUNTO DE LA LISTA");
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        if(jTabbedPane1.getSelectedIndex()==1)
+        {   listarPuntos();
+            mostrarPuntos();
+        }
+        if(jTabbedPane1.getSelectedIndex()==2)
+        {   
+        }
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+
+    void listarPuntos()
+    {   modeloLista.removeAllElements();
+        try
+        {   st=con.createStatement();
+            rs=st.executeQuery("SELECT PUNTO FROM PUNTO WHERE "
+                + "CODIGOFLC='"+jTextField11.getText()+"' ORDER BY PUNTO ASC");            
+            while(rs.next())
+            {   modeloLista.addElement(rs.getString(1));
+            }            
+        }
+        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+    }
+    
+    void mostrarPuntos()
+    {   restablecerTabla();
+        try
+        {   st=con.createStatement();
+            rs=st.executeQuery("SELECT DISTINCT PS.CODIGOPUNTO, P.PUNTO FROM PUNTO_SERVICIO PS INNER JOIN PUNTO P "
+                + "ON PS.CODIGOPUNTO=P.CODIGO WHERE P.CODIGOFLC='"+jTextField11.getText()+"'");            
+            while(rs.next())
+            {   modelo.addColumn(rs.getString(2));//Puntos
+                mostrarServicios(rs.getString(1), rs.getString(2));
+            }     
+            modelo.addColumn("FLECHA 2%");   modelo.addColumn("CUELLOS AMARRES");
+            ajustarAnchoColumas();
+            agruparPuntos();
+            totalEjecutado();
+        }
+        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+    }
+    
+    void restablecerTabla()
+    {   Object dataVector[][]={};
+        Object columnIdentifiers[]={"ITEM", "CODIGO SAP", "DESCRIPCION", "UNIDAD", 
+            "<html><div style=text-align:center>TOTAL<br>EJECUTADO</div></html>"};
+        modelo.setDataVector(dataVector, columnIdentifiers);
+    }
+    
+    void mostrarServicios(String codigoPunto, String punto)
+    {   try
+        {   Statement st2=con.createStatement();
+            ResultSet rs2=st2.executeQuery("SELECT PS.CODIGOSERVICIO, S.DESCRIPCION, S.UNIDAD, PS.CANTIDAD FROM "
+                + "PUNTO_SERVICIO PS INNER JOIN SERVICIO S ON PS.CODIGOSERVICIO=S.CODIGO INNER JOIN PUNTO P "
+                + "ON PS.CODIGOPUNTO=P.CODIGO WHERE CODIGOPUNTO='"+codigoPunto+"' AND P.CODIGOFLC='"+jTextField11.getText()+"'");
+            int item=1;
+            while(rs2.next())
+            {   int fila=buscarServicioEnTabla(rs2.getString(2));
+                int posCol=buscarPosicionDePuntoEnColumnasDeTabla(punto);
+                if(fila==-1)//Servicio no esta en tabla
+                {   int col=jTable1.getColumnCount();
+                    Object row[]=new Object[col];
+                    row[0]=item;
+                    row[1]= rs2.getString(1);
+                    row[2]= rs2.getString(2);
+                    row[3]= rs2.getString(3);                    
+                    row[posCol]=rs2.getString(4);
+                    modelo.addRow(row);                    
+                }
+                else//Servicio ESTÁ en tabla
+                   jTable1.setValueAt(rs2.getString(4), fila, posCol);
+                item++;
+            }     
+            
+        }
+        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+    }
+    
+    int buscarServicioEnTabla(String descripcion)
+    {   int fila=-1;
+        for(int i=0; i<jTable1.getRowCount(); i++)
+        {   if(descripcion.compareTo((String)jTable1.getValueAt(i, 2))==0)
+                fila=i;
+        }
+        return fila;
+    }
+    
+    int buscarPosicionDePuntoEnColumnasDeTabla(String punto)
+    {   int col=-1;
+        for(int i=0; i<jTable1.getColumnCount(); i++)
+        {   if(punto.compareTo((String)jTable1.getColumnName(i))==0)
+                col=i;
+        }
+        return col;
+    }
+    
+    void ajustarAnchoColumas()
+    {   ArrayList<Integer> anchos=new ArrayList<Integer>();
+        anchos.add(50); anchos.add(80);    anchos.add(300);    anchos.add(60); anchos.add(80);
+        for(int i = 0; i < anchos.size(); i++) 
+            jTable1.getColumnModel().getColumn(i).setPreferredWidth(anchos.get(i));
+    }
+    
+    void agruparPuntos()
+    {   TableColumnModel cm = jTable1.getColumnModel();
+        ColumnGroup g_name = new ColumnGroup("Puntos en los que se han instalado en campo (puntos deben coincidir con el croquis presentado)");
+        for(int i=5; i<jTable1.getColumnCount(); i++)
+           g_name.add(cm.getColumn(i));
+        GroupableTableHeader header = (GroupableTableHeader)jTable1.getTableHeader();
+        header.addColumnGroup(g_name);
+    }
+    
+    void totalEjecutado()
+    {   for(int fila=0; fila< jTable1.getRowCount(); fila++)
+        {   int suma=0;
+            for(int col=5; col< jTable1.getColumnCount()-2; col++)
+            {   if(jTable1.getValueAt(fila, col)!=null)
+                    suma+=Integer.parseInt((String) jTable1.getValueAt(fila, col));
+            }
+            jTable1.setValueAt(suma, fila, 4);
+        }
+    }
+    
+    void guardarPreliquidacionServicios()
+    {   
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -728,8 +748,10 @@ public class JD_FLC extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JList<String> jList1;
+    private javax.swing.JList<String> jList2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
+    private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -740,6 +762,7 @@ public class JD_FLC extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     public static javax.swing.JTextField jTextField1;

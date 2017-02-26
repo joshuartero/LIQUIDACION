@@ -431,17 +431,22 @@ public class JIF_Mantenimiento_Material extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jTextField1CaretUpdate
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        JFileChooser elegirImagen = new JFileChooser();
+        JFileChooser elegirImagen = new JFileChooser("D:\\COOPSOL\\MEGAELECTRIC\\MATERIALES");
         elegirImagen.setMultiSelectionEnabled(false);
         int o = elegirImagen.showOpenDialog(this);
         if(o == JFileChooser.APPROVE_OPTION)
         {   ruta = elegirImagen.getSelectedFile().getAbsolutePath();
             nombre = elegirImagen.getSelectedFile().getName();
+            Image imagenexterna=new ImageIcon(ruta).getImage();
             Image preview = Toolkit.getDefaultToolkit().getImage(ruta);
-            if(preview != null){
-                jLabel5.setText("");
-                ImageIcon icon = new ImageIcon(preview.getScaledInstance(jLabel5.getWidth(), jLabel5.getHeight(), Image.SCALE_DEFAULT));
-                jLabel5.setIcon(icon);                
+            if(preview != null)
+            {   jLabel5.setText("");
+                ImageIcon icon;
+                if(imagenexterna.getWidth(null)>jLabel5.getWidth() || imagenexterna.getHeight(null)>jLabel5.getHeight())
+                    icon = new ImageIcon(preview.getScaledInstance(jLabel5.getWidth(), jLabel5.getHeight(), Image.SCALE_DEFAULT));
+                else
+                    icon = new ImageIcon(preview.getScaledInstance(preview.getWidth(null), preview.getHeight(null), Image.SCALE_DEFAULT));                
+                jLabel5.setIcon(icon);
             }
         }
     }//GEN-LAST:event_jButton4ActionPerformed

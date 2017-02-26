@@ -96,6 +96,12 @@ public class JIF_FLC extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("FORMATO DE LIQUIDACION DE CAMPO");
 
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
+            }
+        });
+
         jLabel1.setText("UNIDAD DE NEGOCIOS ");
 
         jLabel2.setText("CONTRATISTA ");
@@ -426,6 +432,10 @@ public class JIF_FLC extends javax.swing.JInternalFrame {
     private void jList1ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_jList1ValueChanged
         JOptionPane.showMessageDialog(this,jList1.getSelectedIndex());
     }//GEN-LAST:event_jList1ValueChanged
+
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        JOptionPane.showMessageDialog(this, "PRELIQUIDACION DE MATERIAL NUEVO");
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
 
     void totalEjecutado()
     {   for(int fila=0; fila< jTable1.getRowCount(); fila++)

@@ -200,8 +200,8 @@ public class JIF_Formato_Liquidacion_Campo extends javax.swing.JInternalFrame {
         {   JD_FLC jdflc=new JD_FLC(this,true);
             enviarDatosFLC((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0), jdflc);
             jdflc.jTextField11.setText((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-            jdflc.listarPuntos();
-            jdflc.mostrarPuntos();
+//            jdflc.listarPuntos();
+//            jdflc.mostrarPuntos();
             jdflc.setVisible(true);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
