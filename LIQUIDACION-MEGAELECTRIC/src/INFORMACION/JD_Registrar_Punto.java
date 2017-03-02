@@ -1,13 +1,10 @@
 package INFORMACION;
 
-import CLASES.Punto;
-import CLASES.Servicio;
 import CLASES.CCONEXION;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -153,7 +150,7 @@ public class JD_Registrar_Punto extends javax.swing.JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jLabel1.setText("PUNTO");
 
@@ -190,7 +187,7 @@ public class JD_Registrar_Punto extends javax.swing.JDialog {
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jButton1.setText("AGREGAR");
+        jButton1.setText("GUARDAR");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -330,7 +327,8 @@ public class JD_Registrar_Punto extends javax.swing.JDialog {
                 {   st.executeUpdate("INSERT INTO PUNTO_SERVICIO VALUES "
                         + "('"+codigoPunto+"','"+(String)jTable1.getValueAt(fila, 0)+"',"
                         + "'"+jTable1.getValueAt(fila, 3)+"')");
-                }                                       
+                }                         
+                jTextField1.setText("");
                 JOptionPane.showMessageDialog(this, "PUNTO REGISTRADO CON SUS RESPECTIVOS SERVICIOS");
             }
             catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}

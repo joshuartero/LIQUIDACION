@@ -19,7 +19,7 @@ public class MDI_Principal extends javax.swing.JFrame {
     public MDI_Principal() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
-        setSize(1300,640);        
+        setSize(1300,640);  
     }
 
     @SuppressWarnings("unchecked")

@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
@@ -26,8 +29,8 @@ public class JD_FLC extends javax.swing.JDialog {
     CCONEXION cConexion=new CCONEXION(); 
     Connection con=cConexion.getCon();
     Statement st;   ResultSet rs;
-    DefaultTableModel modelo;
-    DefaultListModel modeloLista;
+    DefaultTableModel modelo, modeloTablaPreliquidacion;
+    DefaultListModel modeloLista1, modeloLista2;
     
     public JD_FLC(JIF_Formato_Liquidacion_Campo jifflc, boolean modal) {
         super(JOptionPane.getFrameForComponent(jifflc), modal);
@@ -35,10 +38,22 @@ public class JD_FLC extends javax.swing.JDialog {
         initComponents();
         
         modelo=(DefaultTableModel) jTable1.getModel();
-        modeloLista=new DefaultListModel();
-        jList1.setModel(modeloLista);
+        modeloTablaPreliquidacion=(DefaultTableModel) jTable2.getModel();
+        modeloLista1=new DefaultListModel();
+        modeloLista2=new DefaultListModel();
+        jList1.setModel(modeloLista1);
+        jList2.setModel(modeloLista2);
         
         setLocationRelativeTo(this);
+    }
+        
+    void centrar(JTable tabla)
+    {   DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
+        tcr.setHorizontalAlignment(SwingConstants.CENTER);
+        for(int col=0; col<tabla.getColumnCount(); col++)
+        {   if(col!=2)
+                tabla.getColumnModel().getColumn(col).setCellRenderer(tcr);
+        }        
     }
     
     void generarCodigo()//F12-03-25
@@ -102,6 +117,13 @@ public class JD_FLC extends javax.swing.JDialog {
         jPanel8 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jPanel6 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jList1 = new javax.swing.JList<>();
+        jButton3 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jPanel13 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable(){
             protected JTableHeader createDefaultTableHeader()
@@ -109,16 +131,20 @@ public class JD_FLC extends javax.swing.JDialog {
                 return new GroupableTableHeader(columnModel);
             }
         };
-        jPanel6 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jButton3 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel11 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jList2 = new javax.swing.JList<>();
+        jPanel12 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable(){
+            protected JTableHeader createDefaultTableHeader()
+            {
+                return new GroupableTableHeader(columnModel);
+            }
+        };
+        jPanel14 = new javax.swing.JPanel();
+        jButton5 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
 
@@ -126,6 +152,7 @@ public class JD_FLC extends javax.swing.JDialog {
 
         jPanel7.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
+        jTabbedPane1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTabbedPane1MouseClicked(evt);
@@ -313,7 +340,7 @@ public class JD_FLC extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(449, Short.MAX_VALUE))
+                .addContainerGap(380, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -325,21 +352,10 @@ public class JD_FLC extends javax.swing.JDialog {
                         .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("DATOS", jPanel1);
-
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ITEM", "CODIGO SAP", "DESCRIPCION", "UNIDAD", "<html><div style=text-align:center>TOTAL<br>EJECUTADO</div></html>"
-            }
-        ));
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        jScrollPane1.setViewportView(jTable1);
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("PUNTOS"));
 
@@ -373,25 +389,64 @@ public class JD_FLC extends javax.swing.JDialog {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
+                .addContainerGap())
+        );
+
+        jPanel13.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ITEM", "CODIGO SAP", "DESCRIPCION", "UNIDAD", "<html><div style=text-align:center>TOTAL<br>EJECUTADO</div></html>"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jScrollPane1.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
+        jPanel13.setLayout(jPanel13Layout);
+        jPanel13Layout.setHorizontalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 809, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel13Layout.setVerticalGroup(
+            jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel13Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -403,16 +458,16 @@ public class JD_FLC extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 886, Short.MAX_VALUE)
+                .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -428,14 +483,87 @@ public class JD_FLC extends javax.swing.JDialog {
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel11Layout.createSequentialGroup()
+            .addGroup(jPanel11Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel12.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ITEM", "CODIGO SAP", "DESCRIPCION", "UND", "<html><div style=text-align:center>ASIGNADO SALIDA<br>SAP REAL</div></html>", "<html><div style=text-align:center>TOTAL<br>INSTALADO</div></html>", "<html><div style=text-align:center>SALDO A<br>DEVOLVER</div></html>"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable2.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jScrollPane4.setViewportView(jTable2);
+        if (jTable2.getColumnModel().getColumnCount() > 0) {
+            jTable2.getColumnModel().getColumn(0).setMaxWidth(50);
+            jTable2.getColumnModel().getColumn(1).setMaxWidth(80);
+            jTable2.getColumnModel().getColumn(2).setMaxWidth(300);
+            jTable2.getColumnModel().getColumn(3).setMaxWidth(60);
+            jTable2.getColumnModel().getColumn(4).setMaxWidth(120);
+            jTable2.getColumnModel().getColumn(5).setMaxWidth(120);
+            jTable2.getColumnModel().getColumn(6).setMaxWidth(120);
+        }
+
+        javax.swing.GroupLayout jPanel12Layout = new javax.swing.GroupLayout(jPanel12);
+        jPanel12.setLayout(jPanel12Layout);
+        jPanel12Layout.setHorizontalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 809, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel12Layout.setVerticalGroup(
+            jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel12Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel14.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), "MATERIALES"));
+
+        jButton5.setText("<html><div style=text-align:center>AGREGAR<br>O QUITAR</div></html>");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
+        jPanel14.setLayout(jPanel14Layout);
+        jPanel14Layout.setHorizontalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel14Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel14Layout.setVerticalGroup(
+            jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -445,14 +573,23 @@ public class JD_FLC extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(902, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -462,11 +599,11 @@ public class JD_FLC extends javax.swing.JDialog {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1051, Short.MAX_VALUE)
+            .addGap(0, 982, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 346, Short.MAX_VALUE)
+            .addGap(0, 371, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("MATERIAL RETIRADO DE CAMPO", jPanel4);
@@ -475,14 +612,16 @@ public class JD_FLC extends javax.swing.JDialog {
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1051, Short.MAX_VALUE)
+            .addGap(0, 982, Short.MAX_VALUE)
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 346, Short.MAX_VALUE)
+            .addGap(0, 371, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab("OBSERVACIONES", jPanel5);
+
+        jTabbedPane1.setSelectedIndex(2);
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -491,13 +630,13 @@ public class JD_FLC extends javax.swing.JDialog {
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTabbedPane1)
-                .addContainerGap())
+                .addGap(77, 77, 77))
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jTabbedPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -514,8 +653,8 @@ public class JD_FLC extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -526,111 +665,37 @@ public class JD_FLC extends javax.swing.JDialog {
         jdap.setVisible(true);
         if(jdap.isVisible()==false)
         {   restablecerTabla();
-            listarPuntos();
+            listarPuntos(modeloLista1);
             mostrarPuntos();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if(jList1.getSelectedIndex()==-1)
-            JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN PUNTO DE LA LISTA");
-        else
-        {   JD_Modificar_Punto jdrp=new JD_Modificar_Punto(this, true);
-            jdrp.jTextField1.setText(jList1.getSelectedValue());
-            jdrp.jTextField1.setEnabled(false);
-            jdrp.listarServiciosDePunto();
-            jdrp.setVisible(true);
-            if(jdrp.isVisible()==false)
-                mostrarPuntos();
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        guardarCambiosDatosGenerales();
-//        switch(jTabbedPane1.getSelectedIndex())
-//        {   case 0:
-//                guardarCambiosDatosGenerales();
-//                break;
-//            case 1:
-//                guardarPreliquidacionServicios();
-//                break;
-//        }        
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-     void guardarCambiosDatosGenerales()
-    {   try
-        {   st.executeUpdate("UPDATE FLC SET UNDNEGOCIO='"+jTextField1.getText()+"'"
-                + ",CONTRATISTA='"+jTextField2.getText()+"'"
-                + ",OM_NRO='"+jTextField3.getText()+"'"
-                + ",PEDIDOABIERTO_NRO='"+jTextField4.getText()+"'"
-                + ",TIPOTRABAJO='"+jTextField5.getText()+"'"
-                + ",DESCRIPCIONOBRA='"+jTextField6.getText()+"'"
-                + ",UBICACION='"+jTextField7.getText()+"'"
-                + ",SEDALIMENTADOR='"+jTextField8.getText()+"'"
-                + ",SUPERVISORENOSA='"+jTextField9.getText()+"'"
-                + ",SUPERVISORCONTRATISTA='"+jTextField10.getText()+"'"
-                + ",FECHAELABORAFLC="+fechaActual(jDateChooser1)+" WHERE CODIGO='"+jTextField11.getText()+"'");            
-            JOptionPane.showMessageDialog(this, "DATOS GENERALES GRABADOS");
-        }
-        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+    void restablecerTabla()
+    {   Object dataVector[][]={};
+        Object columnIdentifiers[]={"ITEM", "CODIGO SAP", "DESCRIPCION", "UNIDAD", 
+            "<html><div style=text-align:center>TOTAL<br>EJECUTADO</div></html>"};
+        modelo.setDataVector(dataVector, columnIdentifiers);
     }
     
-    String fechaActual(JDateChooser date)
-    {   String fechaActual="";
-        if(date.getCalendar()!=null)
-        {   Calendar calendar= date.getCalendar();
-            int dia=calendar.get(Calendar.DAY_OF_MONTH);
-            int mes=calendar.get(Calendar.MONTH)+1;
-            int año=calendar.get(Calendar.YEAR);  
-            fechaActual="'"+año+"-"+mes+"-"+dia+"'";
-        }
-        else    fechaActual="NULL";             
-        return fechaActual;
-    }
-     
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if(jList1.getSelectedIndex()!=-1)
-        {   try
-            {   st.executeUpdate("DELETE FROM PUNTO WHERE PUNTO='"+jList1.getSelectedValue()+"' "
-                    + "AND CODIGOFLC='"+jTextField11.getText()+"'");
-                listarPuntos();
-                mostrarPuntos();
-                JOptionPane.showMessageDialog(this, "PUNTO ELIMINADO CON EXITO");
-            }
-            catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
-        }
-        else JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN PUNTO DE LA LISTA");
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
-        if(jTabbedPane1.getSelectedIndex()==1)
-        {   listarPuntos();
-            mostrarPuntos();
-        }
-        if(jTabbedPane1.getSelectedIndex()==2)
-        {   
-        }
-    }//GEN-LAST:event_jTabbedPane1MouseClicked
-
-    void listarPuntos()
-    {   modeloLista.removeAllElements();
+    void listarPuntos(DefaultListModel modelList)
+    {   modelList.removeAllElements();
         try
         {   st=con.createStatement();
             rs=st.executeQuery("SELECT PUNTO FROM PUNTO WHERE "
                 + "CODIGOFLC='"+jTextField11.getText()+"' ORDER BY PUNTO ASC");            
             while(rs.next())
-            {   modeloLista.addElement(rs.getString(1));
+            {   modelList.addElement(rs.getString(1));
             }            
         }
         catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
     }
     
-    void mostrarPuntos()
+     void mostrarPuntos()
     {   restablecerTabla();
         try
         {   st=con.createStatement();
             rs=st.executeQuery("SELECT DISTINCT PS.CODIGOPUNTO, P.PUNTO FROM PUNTO_SERVICIO PS INNER JOIN PUNTO P "
-                + "ON PS.CODIGOPUNTO=P.CODIGO WHERE P.CODIGOFLC='"+jTextField11.getText()+"'");            
+                + "ON PS.CODIGOPUNTO=P.CODIGO WHERE P.CODIGOFLC='"+jTextField11.getText()+"'");
             while(rs.next())
             {   modelo.addColumn(rs.getString(2));//Puntos
                 mostrarServicios(rs.getString(1), rs.getString(2));
@@ -643,43 +708,35 @@ public class JD_FLC extends javax.swing.JDialog {
         catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
     }
     
-    void restablecerTabla()
-    {   Object dataVector[][]={};
-        Object columnIdentifiers[]={"ITEM", "CODIGO SAP", "DESCRIPCION", "UNIDAD", 
-            "<html><div style=text-align:center>TOTAL<br>EJECUTADO</div></html>"};
-        modelo.setDataVector(dataVector, columnIdentifiers);
-    }
-    
-    void mostrarServicios(String codigoPunto, String punto)
+     void mostrarServicios(String codigoPunto, String punto)
     {   try
         {   Statement st2=con.createStatement();
             ResultSet rs2=st2.executeQuery("SELECT PS.CODIGOSERVICIO, S.DESCRIPCION, S.UNIDAD, PS.CANTIDAD FROM "
                 + "PUNTO_SERVICIO PS INNER JOIN SERVICIO S ON PS.CODIGOSERVICIO=S.CODIGO INNER JOIN PUNTO P "
                 + "ON PS.CODIGOPUNTO=P.CODIGO WHERE CODIGOPUNTO='"+codigoPunto+"' AND P.CODIGOFLC='"+jTextField11.getText()+"'");
-            int item=1;
             while(rs2.next())
             {   int fila=buscarServicioEnTabla(rs2.getString(2));
                 int posCol=buscarPosicionDePuntoEnColumnasDeTabla(punto);
                 if(fila==-1)//Servicio no esta en tabla
                 {   int col=jTable1.getColumnCount();
                     Object row[]=new Object[col];
-                    row[0]=item;
+                    row[0]=jTable1.getRowCount()+1;
                     row[1]= rs2.getString(1);
                     row[2]= rs2.getString(2);
                     row[3]= rs2.getString(3);                    
                     row[posCol]=rs2.getString(4);
-                    modelo.addRow(row);                    
+                    modelo.addRow(row);
                 }
                 else//Servicio ESTÁ en tabla
                    jTable1.setValueAt(rs2.getString(4), fila, posCol);
-                item++;
+                //item++;
             }     
             
         }
         catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
     }
-    
-    int buscarServicioEnTabla(String descripcion)
+     
+     int buscarServicioEnTabla(String descripcion)
     {   int fila=-1;
         for(int i=0; i<jTable1.getRowCount(); i++)
         {   if(descripcion.compareTo((String)jTable1.getValueAt(i, 2))==0)
@@ -723,16 +780,233 @@ public class JD_FLC extends javax.swing.JDialog {
             jTable1.setValueAt(suma, fila, 4);
         }
     }
-    
-    void guardarPreliquidacionServicios()
-    {   
+     
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if(jList1.getSelectedIndex()==-1)
+            JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN PUNTO DE LA LISTA");
+        else
+        {   JD_Modificar_Punto jdrp=new JD_Modificar_Punto(this, true);
+            jdrp.jTextField1.setText(jList1.getSelectedValue());
+            jdrp.jTextField1.setEnabled(false);
+            jdrp.listarServiciosDePunto();
+            jdrp.setVisible(true);
+            if(jdrp.isVisible()==false)
+                mostrarPuntos();
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        guardarCambiosDatosGenerales();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+     void guardarCambiosDatosGenerales()
+    {   try
+        {   st.executeUpdate("UPDATE FLC SET UNDNEGOCIO='"+jTextField1.getText()+"'"
+                + ",CONTRATISTA='"+jTextField2.getText()+"'"
+                + ",OM_NRO='"+jTextField3.getText()+"'"
+                + ",PEDIDOABIERTO_NRO='"+jTextField4.getText()+"'"
+                + ",TIPOTRABAJO='"+jTextField5.getText()+"'"
+                + ",DESCRIPCIONOBRA='"+jTextField6.getText()+"'"
+                + ",UBICACION='"+jTextField7.getText()+"'"
+                + ",SEDALIMENTADOR='"+jTextField8.getText()+"'"
+                + ",SUPERVISORENOSA='"+jTextField9.getText()+"'"
+                + ",SUPERVISORCONTRATISTA='"+jTextField10.getText()+"'"
+                + ",FECHAELABORAFLC="+fechaActual(jDateChooser1)+" WHERE CODIGO='"+jTextField11.getText()+"'");            
+            JOptionPane.showMessageDialog(this, "DATOS GENERALES GRABADOS");
+        }
+        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
     }
+    
+    String fechaActual(JDateChooser date)
+    {   String fechaActual="";
+        if(date.getCalendar()!=null)
+        {   Calendar calendar= date.getCalendar();
+            int dia=calendar.get(Calendar.DAY_OF_MONTH);
+            int mes=calendar.get(Calendar.MONTH)+1;
+            int año=calendar.get(Calendar.YEAR);  
+            fechaActual="'"+año+"-"+mes+"-"+dia+"'";
+        }
+        else    fechaActual="NULL";             
+        return fechaActual;
+    }
+     
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if(jList1.getSelectedIndex()!=-1)
+        {   try
+            {   st.executeUpdate("DELETE FROM PUNTO WHERE PUNTO='"+jList1.getSelectedValue()+"' "
+                    + "AND CODIGOFLC='"+jTextField11.getText()+"'");
+                listarPuntos(modeloLista1);
+                mostrarPuntos();
+                JOptionPane.showMessageDialog(this, "PUNTO ELIMINADO CON EXITO");
+            }
+            catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+        }
+        else JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN PUNTO DE LA LISTA");
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        if(jTabbedPane1.getSelectedIndex()==1)
+        {   listarPuntos(modeloLista1);
+            mostrarPuntos();
+            centrar(jTable1);
+        }
+        if(jTabbedPane1.getSelectedIndex()==2)
+        {   listarPuntos(modeloLista2);
+            mostrarPuntosPreliquidacion();
+            centrar(jTable2);
+        }
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+
+    void mostrarPuntosPreliquidacion()
+    {   restablecerTablaPreliquidacion();
+        try
+        {   rs=st.executeQuery("SELECT CODIGO, PUNTO FROM PUNTO WHERE "
+                + "CODIGOFLC='"+jTextField11.getText()+"' ORDER BY PUNTO ASC");            
+            while(rs.next())
+            {   modeloTablaPreliquidacion.addColumn(rs.getString(2));//AGREGAR Puntos
+                //modeloTablaPreliquidacion.addColumn("REF5643");//SOLO AGREGAR REFERENCIAS DE CADA PUNTO MAS NO LOS PUNTOS EN SI PARA AGRUPAR DE 3
+                mostrarMateriales(rs.getString(1), rs.getString(2));
+            }     
+            modeloTablaPreliquidacion.addColumn("FLECHA 2%");   modeloTablaPreliquidacion.addColumn("CUELLOS AMARRES");
+            ajustarAnchoColumasPreliquidacion();
+            agruparPuntosPreliquidacion();
+//            asignadoSalidaSAPReal();
+            totalInstalado();
+//            saldo_aDevolver();
+        }
+        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+    }
+    
+    void restablecerTablaPreliquidacion()
+    {   Object dataVector[][]={};
+        Object columnIdentifiers[]={"ITEM", "CODIGO SAP", "DESCRIPCION", "UND", 
+            "<html><div style=text-align:center>ASIGNADO SALIDA<br>SAP REAL</div></html>",
+            "<html><div style=text-align:center>TOTAL<br>INSTALADO</div></html>",
+            "<html><div style=text-align:center>SALDO A<br>DEVOLVER</div></html>"};
+        modeloTablaPreliquidacion.setDataVector(dataVector, columnIdentifiers);
+    }
+    
+    void mostrarMateriales(String codigoPunto, String punto)
+    {   try
+        {   Statement st2=con.createStatement();
+            ResultSet rs2=st2.executeQuery("SELECT PM.CODIGOMATERIAL, M.DESCRIPCION, M.UNIDAD, "
+                + "PM.CANTIDAD FROM PUNTO_MATERIAL PM INNER JOIN MATERIAL M ON "
+                + "PM.CODIGOMATERIAL=M.CODIGO INNER JOIN PUNTO P ON PM.CODIGOPUNTO=P.CODIGO "
+                + "WHERE PM.CODIGOPUNTO='"+codigoPunto+"' AND P.CODIGOFLC='"+jTextField11.getText()+"'");
+            while(rs2.next())
+            {   int fila=buscarMaterialEnTabla(rs2.getString(2));
+                int posCol=buscarPosicionDePuntoEnColumnasDeTablaMateriales(punto);
+                if(fila==-1)//Material no esta en tabla
+                {   int col=jTable2.getColumnCount();
+                    Object row[]=new Object[col];
+                    row[0]=jTable2.getRowCount()+1;
+                    row[1]= rs2.getString(1);
+                    row[2]= rs2.getString(2);
+                    row[3]= rs2.getString(3);                    
+                    row[posCol]=rs2.getString(4);
+                    modeloTablaPreliquidacion.addRow(row);                    
+                }
+                else//Material ESTÁ en tabla
+                   jTable2.setValueAt(rs2.getString(4), fila, posCol);
+            }     
+            
+        }
+        catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
+    }
+    
+    int buscarMaterialEnTabla(String descripcion)
+    {   int fila=-1;
+        for(int i=0; i<jTable2.getRowCount(); i++)
+        {   if(descripcion.compareTo((String)jTable2.getValueAt(i, 2))==0)
+                fila=i;
+        }
+        return fila;
+    }
+    
+    int buscarPosicionDePuntoEnColumnasDeTablaMateriales(String punto)
+    {   int col=-1;
+        for(int i=0; i<jTable2.getColumnCount(); i++)
+        {   if(punto.compareTo((String)jTable2.getColumnName(i))==0)
+                col=i;
+        }
+        return col;
+    }
+    
+    void ajustarAnchoColumasPreliquidacion()
+    {   ArrayList<Integer> anchos=new ArrayList<Integer>();
+        anchos.add(50);/*Item*/ anchos.add(80);/*Codigo SAP*/ anchos.add(300);/*Descripcion*/
+        anchos.add(60);/*Unidad*/ anchos.add(120);/*Asignado Salida SAP Real*/ 
+        anchos.add(120);/*Total Instalado*/ anchos.add(120);/*Saldo a Devolver*/
+        for(int i = 0; i < anchos.size(); i++) 
+            jTable2.getColumnModel().getColumn(i).setPreferredWidth(anchos.get(i));
+    }
+    
+    void agruparPuntosPreliquidacion()
+    {   TableColumnModel cm = jTable2.getColumnModel();
+        ColumnGroup g_name = new ColumnGroup("Puntos en los que se han instalado en campo (puntos deben coincidir con el croquis presentado)");
+        for(int i=7; i<jTable2.getColumnCount(); i++)
+           g_name.add(cm.getColumn(i));
+        GroupableTableHeader header = (GroupableTableHeader)jTable2.getTableHeader();
+        header.addColumnGroup(g_name);
+        
+////        AGRUPAR DE A 3 PARA ESTO SOLO SE DEBE MOSTRAR LA REFERENCIA MAS NO EL PUNTO EN LA TABLA
+//        TableColumnModel cm = jTable2.getColumnModel();
+//        GroupableTableHeader header = (GroupableTableHeader)jTable2.getTableHeader();
+//        ColumnGroup g_name = new ColumnGroup("Puntos en los que se han instalado en campo (puntos deben coincidir con el croquis presentado)");                
+////        AGRUPAR DE A 3 FORMA MANUAL
+//        ColumnGroup g_lang = new ColumnGroup((String)modeloLista2.elementAt(0));
+//        g_lang.add(cm.getColumn(7));
+//        g_name.add(g_lang);        
+//        
+//        ColumnGroup g_lang2 = new ColumnGroup((String)modeloLista2.elementAt(1));
+//        g_lang2.add(cm.getColumn(8));
+//        g_name.add(g_lang2);
+
+////        AGRUPAR DE A 3 FORMA TOTAL
+//        int poslista=0;
+//        for(int col=7; col<jTable2.getColumnCount()-2; col++)
+//        {   ColumnGroup g=new ColumnGroup((String)modeloLista2.elementAt(poslista));
+//            g.add(cm.getColumn(col));
+//            g_name.add(g);
+//            poslista++;
+//        }
+        
+//        g_name.add(cm.getColumn(jTable2.getColumnCount()-1));
+//        g_name.add(cm.getColumn(jTable2.getColumnCount()-2));
+//
+//        header.addColumnGroup(g_name);
+    }
+    
+    void totalInstalado()
+    {   for(int fila=0; fila< jTable2.getRowCount(); fila++)
+        {   int suma=0;
+            for(int col=7; col< jTable2.getColumnCount()-2; col++)
+            {   if(jTable2.getValueAt(fila, col)!=null)
+                    suma+=Integer.parseInt((String) jTable2.getValueAt(fila, col));
+            }
+            jTable2.setValueAt(suma, fila, 5);
+        }
+    }
+    
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if(jList2.getSelectedIndex()!=-1)
+        {   JD_Agregar_Material_Punto jdam=new JD_Agregar_Material_Punto(this,true);
+            jdam.jTextField1.setText(jList2.getSelectedValue());
+            jdam.jTextField2.setText(jTextField11.getText());
+            jdam.listarMateriales();
+            jdam.setVisible(true);
+            if(!jdam.isVisible())
+                mostrarPuntosPreliquidacion();
+        }
+        else    JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN PUNTO DE LA LISTA");
+    }//GEN-LAST:event_jButton5ActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     public static com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -752,6 +1026,9 @@ public class JD_FLC extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
+    private javax.swing.JPanel jPanel12;
+    private javax.swing.JPanel jPanel13;
+    private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -763,8 +1040,10 @@ public class JD_FLC extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     public static javax.swing.JTextField jTextField1;
     public static javax.swing.JTextField jTextField10;
     public static javax.swing.JTextField jTextField11;

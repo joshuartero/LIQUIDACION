@@ -370,7 +370,7 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
     void actualizar_Y_O_GuardarServicios()
     {   //Recorremos toda la tabla
         for(int fila=0; fila<jTable1.getRowCount(); fila++)
-        {   if(buscarServicioEnPunto((String)jTable1.getValueAt(fila, 0)))
+        {   if(buscarServicioEnPunto((String)jTable1.getValueAt(fila, 0)))//ENCUENTRA SERVICIO ASIGNADO A PUNTO
             {   actualizarServicio((String)jTable1.getValueAt(fila, 3), (String)jTable1.getValueAt(fila, 0));
             }
             else
@@ -383,7 +383,8 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
     void actualizarServicio(String cantidad, String codigoServicio)
     {   try
         {   st.executeUpdate("UPDATE PUNTO_SERVICIO SET CANTIDAD='"+cantidad+"' "
-                + "WHERE CODIGOPUNTO=(SELECT CODIGO FROM PUNTO WHERE PUNTO='"+jTextField1.getText()+"' "
+                + "WHERE CODIGOPUNTO=(SELECT CODIGO FROM PUNTO WHERE PUNTO=' "
+                + "AND CODIGOFLC='"+jTextField2.getText()+"'"+jTextField1.getText()+"' "
                 + "AND CODIGOSERVICIO='"+codigoServicio+"');");                        
         }
         catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}
@@ -392,7 +393,8 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
     void insertarServicio(String punto, String codigoServicio, String cantidad)
     {   try
         {   st.executeUpdate("INSERT INTO PUNTO_SERVICIO VALUES "
-                + "( (SELECT CODIGO FROM PUNTO WHERE PUNTO='"+punto+"') ,"
+                + "( (SELECT CODIGO FROM PUNTO WHERE PUNTO='"+punto+"' "
+                + "AND CODIGOFLC='"+jTextField5.getText()+"') ,"
                 + "'"+codigoServicio+"','"+cantidad+"')");
         }
         catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}
