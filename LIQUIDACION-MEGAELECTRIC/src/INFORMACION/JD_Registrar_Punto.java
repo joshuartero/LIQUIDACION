@@ -328,7 +328,7 @@ public class JD_Registrar_Punto extends javax.swing.JDialog {
                         + "('"+codigoPunto+"','"+(String)jTable1.getValueAt(fila, 0)+"',"
                         + "'"+jTable1.getValueAt(fila, 3)+"')");
                 }                         
-                jTextField1.setText("");
+                jTextField1.setText("");    jTextField6.setText("");    limpiarTabla();
                 JOptionPane.showMessageDialog(this, "PUNTO REGISTRADO CON SUS RESPECTIVOS SERVICIOS");
             }
             catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}

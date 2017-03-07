@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemadesigner version="6.5">
+<source>
+<database charset="latin1" collation="latin1_swedish_ci">megaelectric</database>
+</source>
+<canvas zoom="100">
+<tables>
+<table name="flc" view="colnames">
+<left>6</left>
+<top>131</top>
+<width>206</width>
+<height>299</height>
+<sql_create_table>CREATE TABLE `flc` (
+  `CODIGO` char(10) NOT NULL,
+  `UNDNEGOCIO` varchar(20) DEFAULT NULL,
+  `CONTRATISTA` varchar(50) DEFAULT NULL,
+  `OM_NRO` char(10) DEFAULT NULL,
+  `PEDIDOABIERTO_NRO` char(10) DEFAULT NULL,
+  `TIPOTRABAJO` varchar(50) DEFAULT NULL,
+  `DESCRIPCIONOBRA` varchar(50) DEFAULT NULL,
+  `UBICACION` varchar(50) DEFAULT NULL,
+  `SEDALIMENTADOR` char(7) DEFAULT NULL,
+  `SUPERVISORENOSA` varchar(40) DEFAULT NULL,
+  `SUPERVISORCONTRATISTA` varchar(40) DEFAULT NULL,
+  `FECHAELABORAFLC` date DEFAULT NULL,
+  `VERSION` char(12) DEFAULT NULL,
+  PRIMARY KEY (`CODIGO`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="material" view="colnames">
+<left>725</left>
+<top>318</top>
+<width>141</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `material` (
+  `CODIGO` char(8) NOT NULL,
+  `DESCRIPCION` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `UNIDAD` varchar(3) NOT NULL,
+  `IMAGEN` longblob,
+  `NOMBREIMAGEN` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`CODIGO`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="punto" view="colnames">
+<left>279</left>
+<top>197</top>
+<width>117</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `punto` (
+  `CODIGO` char(10) NOT NULL,
+  `PUNTO` varchar(4) NOT NULL,
+  `CODIGOFLC` char(10) DEFAULT NULL,
+  PRIMARY KEY (`CODIGO`),
+  KEY `CODIGOFLC` (`CODIGOFLC`),
+  CONSTRAINT `punto_ibfk_1` FOREIGN KEY (`CODIGOFLC`) REFERENCES `flc` (`CODIGO`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="punto_material" view="colnames">
+<left>484</left>
+<top>302</top>
+<width>154</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `punto_material` (
+  `CODIGOPUNTO` char(10) DEFAULT NULL,
+  `CODIGOMATERIAL` char(8) DEFAULT NULL,
+  `CANTIDAD` int(11) DEFAULT NULL,
+  KEY `CODIGOPUNTO` (`CODIGOPUNTO`),
+  KEY `CODIGOMATERIAL` (`CODIGOMATERIAL`),
+  CONSTRAINT `punto_material_ibfk_1` FOREIGN KEY (`CODIGOPUNTO`) REFERENCES `punto` (`CODIGO`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `punto_material_ibfk_2` FOREIGN KEY (`CODIGOMATERIAL`) REFERENCES `material` (`CODIGO`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="punto_servicio" view="colnames">
+<left>475</left>
+<top>56</top>
+<width>155</width>
+<height>129</height>
+<sql_create_table>CREATE TABLE `punto_servicio` (
+  `CODIGOPUNTO` char(10) DEFAULT NULL,
+  `CODIGOSERVICIO` char(6) DEFAULT NULL,
+  `CANTIDAD` int(11) DEFAULT NULL,
+  KEY `CODIGOSERVICIO` (`CODIGOSERVICIO`),
+  KEY `CODIGOPUNTO` (`CODIGOPUNTO`),
+  CONSTRAINT `punto_servicio_ibfk_2` FOREIGN KEY (`CODIGOSERVICIO`) REFERENCES `servicio` (`CODIGO`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `punto_servicio_ibfk_3` FOREIGN KEY (`CODIGOPUNTO`) REFERENCES `punto` (`CODIGO`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+<table name="servicio" view="colnames">
+<left>727</left>
+<top>43</top>
+<width>130</width>
+<height>163</height>
+<sql_create_table>CREATE TABLE `servicio` (
+  `CODIGO` char(6) NOT NULL,
+  `DESCRIPCION` varchar(40) NOT NULL,
+  `UNIDAD` varchar(3) NOT NULL,
+  `TR` char(2) NOT NULL,
+  `PUNIT` double NOT NULL,
+  PRIMARY KEY (`CODIGO`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1</sql_create_table>
+</table>
+</tables>
+</canvas>
+</schemadesigner>

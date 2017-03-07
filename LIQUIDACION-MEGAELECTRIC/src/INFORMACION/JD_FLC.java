@@ -58,7 +58,8 @@ public class JD_FLC extends javax.swing.JDialog {
     
     void generarCodigo()//F12-03-25
     {   try
-        {   rs=st.executeQuery("SELECT MAX(CODIGO) FROM FLC");            
+        {   st=con.createStatement();
+            rs=st.executeQuery("SELECT MAX(CODIGO) FROM FLC");            
             if(rs.next())
             {   if(rs.getString(1)!=null)
                 {   String codigo="F12-03-"+(Integer.parseInt(rs.getString(1).substring(7, 9))+1);
@@ -202,19 +203,22 @@ public class JD_FLC extends javax.swing.JDialog {
                     .addComponent(jLabel10)
                     .addComponent(jLabel11))
                 .addGap(27, 27, 27)
-                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jTextField10)
-                    .addComponent(jTextField9)
-                    .addComponent(jTextField8)
-                    .addComponent(jTextField7)
-                    .addComponent(jTextField6)
+                .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField5)
-                    .addComponent(jTextField4)
-                    .addComponent(jTextField3)
-                    .addComponent(jTextField2)
-                    .addComponent(jTextField1)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jTextField6)
+                    .addComponent(jTextField7)
+                    .addComponent(jTextField9)
+                    .addGroup(jPanel9Layout.createSequentialGroup()
+                        .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextField8)
+                            .addComponent(jTextField4)
+                            .addComponent(jTextField3)
+                            .addComponent(jTextField2)
+                            .addComponent(jTextField1)
+                            .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 196, Short.MAX_VALUE))
+                    .addComponent(jTextField10))
+                .addContainerGap())
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,7 +323,7 @@ public class JD_FLC extends javax.swing.JDialog {
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(87, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -335,12 +339,12 @@ public class JD_FLC extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(380, Short.MAX_VALUE))
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(184, 184, 184))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -801,7 +805,8 @@ public class JD_FLC extends javax.swing.JDialog {
 
      void guardarCambiosDatosGenerales()
     {   try
-        {   st.executeUpdate("UPDATE FLC SET UNDNEGOCIO='"+jTextField1.getText()+"'"
+        {   st=con.createStatement();
+            st.executeUpdate("UPDATE FLC SET UNDNEGOCIO='"+jTextField1.getText()+"'"
                 + ",CONTRATISTA='"+jTextField2.getText()+"'"
                 + ",OM_NRO='"+jTextField3.getText()+"'"
                 + ",PEDIDOABIERTO_NRO='"+jTextField4.getText()+"'"
@@ -811,7 +816,9 @@ public class JD_FLC extends javax.swing.JDialog {
                 + ",SEDALIMENTADOR='"+jTextField8.getText()+"'"
                 + ",SUPERVISORENOSA='"+jTextField9.getText()+"'"
                 + ",SUPERVISORCONTRATISTA='"+jTextField10.getText()+"'"
-                + ",FECHAELABORAFLC="+fechaActual(jDateChooser1)+" WHERE CODIGO='"+jTextField11.getText()+"'");            
+                + ",FECHAELABORAFLC="+fechaActual(jDateChooser1)+" "
+                + ",VERSION='"+jTextField12.getText()+"'"
+                + " WHERE CODIGO='"+jTextField11.getText()+"'");            
             JOptionPane.showMessageDialog(this, "DATOS GENERALES GRABADOS");
         }
         catch(SQLException ex)  {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A: "+ex.toString());}
@@ -1047,7 +1054,7 @@ public class JD_FLC extends javax.swing.JDialog {
     public static javax.swing.JTextField jTextField1;
     public static javax.swing.JTextField jTextField10;
     public static javax.swing.JTextField jTextField11;
-    private javax.swing.JTextField jTextField12;
+    public static javax.swing.JTextField jTextField12;
     public static javax.swing.JTextField jTextField2;
     public static javax.swing.JTextField jTextField3;
     public static javax.swing.JTextField jTextField4;

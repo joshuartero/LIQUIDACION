@@ -6,8 +6,17 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -43,6 +52,7 @@ public class JIF_Formato_Liquidacion_Campo extends javax.swing.JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -132,6 +142,13 @@ public class JIF_Formato_Liquidacion_Campo extends javax.swing.JInternalFrame {
             }
         });
 
+        jButton4.setText("REPORTE");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -141,6 +158,8 @@ public class JIF_Formato_Liquidacion_Campo extends javax.swing.JInternalFrame {
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton4)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -149,7 +168,8 @@ public class JIF_Formato_Liquidacion_Campo extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(jButton3)
+                    .addComponent(jButton4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -200,12 +220,43 @@ public class JIF_Formato_Liquidacion_Campo extends javax.swing.JInternalFrame {
         {   JD_FLC jdflc=new JD_FLC(this,true);
             enviarDatosFLC((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0), jdflc);
             jdflc.jTextField11.setText((String) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+            jdflc.jTextField12.setText((String) jTable1.getValueAt(jTable1.getSelectedRow(), 1));
 //            jdflc.listarPuntos();
 //            jdflc.mostrarPuntos();
             jdflc.setVisible(true);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        if(jTable1.getSelectedRow()!=-1)
+        {   mostrarReporte("REPORTE", "D:\\COOPSOL\\MEGAELECTRIC\\LIQUIDACION\\LIQUIDACION-MEGAELECTRIC\\src\\Reportes\\report3.jasper");
+        }
+        else JOptionPane.showMessageDialog(this, "PORFAVOR SELECCIONE UN FLC DE LA LISTA");
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    void mostrarReporte(String title, String archivo)
+    {   try 
+        {   JDialog dialog = new JDialog(new JFrame(),title, true);
+            dialog.setSize(1200,600);
+            dialog.setLocationRelativeTo(this);
+            
+            JasperReport relatoriosJasper = (JasperReport) JRLoader.loadObjectFromFile(archivo);
+            
+            Map<String, Object> parametros = new HashMap<String, Object>();
+            parametros.put("CODIGOFLC", (String)jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+            parametros.put("VERSIONFLC", (String)jTable1.getValueAt(jTable1.getSelectedRow(), 1));
+            
+            JasperPrint jasperPrint = JasperFillManager.fillReport(relatoriosJasper, parametros, con);
+            JasperViewer jrViewer = new JasperViewer(jasperPrint, true);
+            
+            dialog.getContentPane().add(jrViewer.getContentPane());
+            dialog.setVisible(true);
+        } 
+        catch (Exception ex) 
+        {   JOptionPane.showMessageDialog(null, ex, "ERROR DE REPORTE "+ex.getMessage(), JOptionPane.ERROR_MESSAGE);
+        }           
+    }
+    
     void enviarDatosFLC(String codigo, JD_FLC jdflc)
     {   try
         {   rs=st.executeQuery("SELECT * FROM FLC WHERE CODIGO='"+codigo+"'");
@@ -243,6 +294,7 @@ public class JIF_Formato_Liquidacion_Campo extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
