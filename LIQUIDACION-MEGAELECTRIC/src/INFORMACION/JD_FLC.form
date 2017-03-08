@@ -634,11 +634,11 @@
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="5" rowCount="0">
-                                <Column editable="false" title="ITEM" type="java.lang.Object"/>
-                                <Column editable="false" title="CODIGO SAP" type="java.lang.Object"/>
-                                <Column editable="false" title="DESCRIPCION" type="java.lang.Object"/>
-                                <Column editable="false" title="UNIDAD" type="java.lang.Object"/>
-                                <Column editable="false" title="&lt;html&gt;&lt;div style=text-align:center&gt;TOTAL&lt;br&gt;EJECUTADO&lt;/div&gt;&lt;/html&gt;" type="java.lang.Object"/>
+                                <Column editable="true" title="ITEM" type="java.lang.Object"/>
+                                <Column editable="true" title="CODIGO SAP" type="java.lang.Object"/>
+                                <Column editable="true" title="DESCRIPCION" type="java.lang.Object"/>
+                                <Column editable="true" title="UNIDAD" type="java.lang.Object"/>
+                                <Column editable="true" title="&lt;html&gt;&lt;div style=text-align:center&gt;TOTAL&lt;br&gt;EJECUTADO&lt;/div&gt;&lt;/html&gt;" type="java.lang.Object"/>
                               </Table>
                             </Property>
                             <Property name="autoResizeMode" type="int" value="0"/>
@@ -676,7 +676,7 @@
                             </Property>
                           </Properties>
                           <AuxValues>
-                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    protected JTableHeader createDefaultTableHeader()&#xa;    {&#xa;        return new GroupableTableHeader(columnModel);&#xa;    }&#xa;}"/>
+                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JTable(){&#xa;    protected JTableHeader createDefaultTableHeader()&#xa;    {&#xa;        return new GroupableTableHeader(columnModel);&#xa;    }&#xa;    public boolean isCellEditable(int rowIndex, int colIndex) &#xa;    {   return false; //Las celdas no son editables.&#xa;    }&#xa;}"/>
                           </AuxValues>
                         </Component>
                       </SubComponents>
@@ -819,12 +819,12 @@
                           <Properties>
                             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                               <Table columnCount="7" rowCount="0">
-                                <Column editable="false" title="ITEM" type="java.lang.Object"/>
-                                <Column editable="false" title="CODIGO SAP" type="java.lang.Object"/>
-                                <Column editable="false" title="DESCRIPCION" type="java.lang.Object"/>
-                                <Column editable="false" title="UND" type="java.lang.Object"/>
-                                <Column editable="false" title="&lt;html&gt;&lt;div style=text-align:center&gt;ASIGNADO SALIDA&lt;br&gt;SAP REAL&lt;/div&gt;&lt;/html&gt;" type="java.lang.Object"/>
-                                <Column editable="false" title="&lt;html&gt;&lt;div style=text-align:center&gt;TOTAL&lt;br&gt;INSTALADO&lt;/div&gt;&lt;/html&gt;" type="java.lang.Object"/>
+                                <Column editable="true" title="ITEM" type="java.lang.Object"/>
+                                <Column editable="true" title="CODIGO SAP" type="java.lang.Object"/>
+                                <Column editable="true" title="DESCRIPCION" type="java.lang.Object"/>
+                                <Column editable="true" title="UND" type="java.lang.Object"/>
+                                <Column editable="true" title="&lt;html&gt;&lt;div style=text-align:center&gt;ASIGNADO SALIDA&lt;br&gt;SAP REAL&lt;/div&gt;&lt;/html&gt;" type="java.lang.Object"/>
+                                <Column editable="true" title="&lt;html&gt;&lt;div style=text-align:center&gt;TOTAL&lt;br&gt;INSTALADO&lt;/div&gt;&lt;/html&gt;" type="java.lang.Object"/>
                                 <Column editable="false" title="&lt;html&gt;&lt;div style=text-align:center&gt;SALDO A&lt;br&gt;DEVOLVER&lt;/div&gt;&lt;/html&gt;" type="java.lang.Object"/>
                               </Table>
                             </Property>
@@ -873,7 +873,7 @@
                             </Property>
                           </Properties>
                           <AuxValues>
-                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    protected JTableHeader createDefaultTableHeader()&#xa;    {&#xa;        return new GroupableTableHeader(columnModel);&#xa;    }&#xa;}"/>
+                            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new javax.swing.JTable(){&#xa;    protected JTableHeader createDefaultTableHeader()&#xa;    {&#xa;        return new GroupableTableHeader(columnModel);&#xa;    }&#xa;    public boolean isCellEditable(int rowIndex, int colIndex) &#xa;    {   return false; //Las celdas no son editables.&#xa;    }&#xa;}"/>
                           </AuxValues>
                         </Component>
                       </SubComponents>

@@ -46,7 +46,7 @@ public class JD_FLC extends javax.swing.JDialog {
         
         setLocationRelativeTo(this);
     }
-        
+    
     void centrar(JTable tabla)
     {   DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
         tcr.setHorizontalAlignment(SwingConstants.CENTER);
@@ -126,10 +126,13 @@ public class JD_FLC extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jPanel13 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable(){
+        jTable1 = new JTable(){
             protected JTableHeader createDefaultTableHeader()
             {
                 return new GroupableTableHeader(columnModel);
+            }
+            public boolean isCellEditable(int rowIndex, int colIndex)
+            {   return false; //Las celdas no son editables.
             }
         };
         jPanel3 = new javax.swing.JPanel();
@@ -142,6 +145,9 @@ public class JD_FLC extends javax.swing.JDialog {
             protected JTableHeader createDefaultTableHeader()
             {
                 return new GroupableTableHeader(columnModel);
+            }
+            public boolean isCellEditable(int rowIndex, int colIndex)
+            {   return false; //Las celdas no son editables.
             }
         };
         jPanel14 = new javax.swing.JPanel();
@@ -425,15 +431,7 @@ public class JD_FLC extends javax.swing.JDialog {
             new String [] {
                 "ITEM", "CODIGO SAP", "DESCRIPCION", "UNIDAD", "<html><div style=text-align:center>TOTAL<br>EJECUTADO</div></html>"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane1.setViewportView(jTable1);
 
@@ -509,7 +507,7 @@ public class JD_FLC extends javax.swing.JDialog {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                true, true, true, true, true, true, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
