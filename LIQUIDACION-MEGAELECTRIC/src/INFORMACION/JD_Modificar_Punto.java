@@ -383,9 +383,8 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
     void actualizarServicio(String cantidad, String codigoServicio)
     {   try
         {   st.executeUpdate("UPDATE PUNTO_SERVICIO SET CANTIDAD='"+cantidad+"' "
-                + "WHERE CODIGOPUNTO=(SELECT CODIGO FROM PUNTO WHERE PUNTO=' "
-                + "AND CODIGOFLC='"+jTextField2.getText()+"'"+jTextField1.getText()+"' "
-                + "AND CODIGOSERVICIO='"+codigoServicio+"');");                        
+                + "WHERE CODIGOPUNTO=(SELECT CODIGO FROM PUNTO WHERE PUNTO='"+jTextField1.getText()+"' "
+                + "AND CODIGOFLC='"+jTextField5.getText()+"') AND CODIGOSERVICIO='"+codigoServicio+"';");                        
         }
         catch (SQLException ex) {   JOptionPane.showMessageDialog(this, "ERROR DEBIDO A : "+ex.toString());}
     }
@@ -404,7 +403,8 @@ public class JD_Modificar_Punto extends javax.swing.JDialog {
     {   boolean encontrado=false;
         try
         {   rs=st.executeQuery("SELECT PS.CODIGOSERVICIO FROM PUNTO_SERVICIO PS INNER JOIN PUNTO P "
-                + "ON PS.CODIGOPUNTO=P.CODIGO WHERE P.PUNTO='"+jTextField1.getText()+"';");
+                + "ON PS.CODIGOPUNTO=P.CODIGO WHERE P.PUNTO='"+jTextField1.getText()+"' "
+                + "AND P.CODIGOFLC='"+jTextField5.getText()+"';");
             while(rs.next())
             {   if(rs.getString(1).compareTo(codigoServicio)==0)
                     encontrado=true;

@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d8259521-29dd-4a1f-a83a-410a4e61a560">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="340"/>
+	<property name="ireport.y" value="213"/>
 	<style name="Crosstab Data Text" hAlign="Center"/>
 	<style name="table">
 		<box>
@@ -208,6 +208,31 @@ GROUP BY PS.`CODIGOSERVICIO`;]]>
 		</field>
 		<field name="COUNT(*)" class="java.lang.Long"/>
 	</subDataset>
+	<subDataset name="CROSSTAB" uuid="697d1f8f-a586-4694-8537-a6b4268f3e99">
+		<parameter name="CODIGOFLC" class="java.lang.String"/>
+		<queryString>
+			<![CDATA[SELECT distinct PS.`CODIGOSERVICIO`, CONCAT(PS.`CODIGOSERVICIO`, " ||| ",S.`DESCRIPCION`, " ||| UND: ",S.`UNIDAD`), P.`PUNTO`, PS.`CANTIDAD`
+FROM `punto_servicio` PS
+INNER JOIN `punto` P ON PS.`CODIGOPUNTO`=P.`CODIGO`
+INNER JOIN `servicio` S ON PS.`CODIGOSERVICIO`=S.`CODIGO`
+WHERE P.`CODIGOFLC`=$P{CODIGOFLC};]]>
+		</queryString>
+		<field name="CODIGOSERVICIO" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="CONCAT(PS.`CODIGOSERVICIO`, &quot; ||| &quot;,S.`DESCRIPCION`, &quot; ||| UND: &quot;,S.`UNIDAD`)" class="java.lang.String"/>
+		<field name="PUNTO" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<field name="CANTIDAD" class="java.lang.Integer">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
+		<variable name="VARCODIGOSERVICIO" class="java.lang.String" calculation="DistinctCount"/>
+		<group name="PUNTO">
+			<groupExpression><![CDATA[$F{PUNTO}]]></groupExpression>
+		</group>
+	</subDataset>
+	<subDataset name="dataset1" uuid="011547d1-e3bd-4bb1-819c-221c80de8753"/>
 	<parameter name="CODIGOFLC" class="java.lang.String">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
@@ -520,109 +545,132 @@ GROUP BY PS.`CODIGOSERVICIO`;]]>
 	</columnHeader>
 	<detail>
 		<band height="125" splitType="Stretch">
-			<componentElement>
-				<reportElement key="table 6" style="table 6" x="1" y="0" width="186" height="125" uuid="781ea68e-4c39-4771-9907-aa467c8bb29f"/>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="PDS1" uuid="7f10769e-929f-4b07-b762-2e9a29c34aeb">
-						<datasetParameter name="CODIGOFLC-TABLA">
-							<datasetParameterExpression><![CDATA[$P{CODIGOFLC}.toString()]]></datasetParameterExpression>
-						</datasetParameter>
-						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					</datasetRun>
-					<jr:column width="36" uuid="408c2970-0679-40dd-a5b3-d94495603a75">
-						<jr:columnHeader style="table 6_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="36" height="30" uuid="904574a4-dca6-45ec-bed4-f0d134e08152"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="8"/>
-								</textElement>
-								<text><![CDATA[CODIGO]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="table 6_TD" height="20" rowSpan="1">
+			<crosstab>
+				<reportElement x="0" y="0" width="555" height="125" uuid="8649bf47-4aa8-4649-8a93-9d744d0822c6"/>
+				<crosstabDataset>
+					<dataset>
+						<datasetRun subDataset="CROSSTAB" uuid="e4c587f2-c70d-4105-99f2-0626ff46a306">
+							<datasetParameter name="CODIGOFLC">
+								<datasetParameterExpression><![CDATA[$P{CODIGOFLC}]]></datasetParameterExpression>
+							</datasetParameter>
+							<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+						</datasetRun>
+					</dataset>
+				</crosstabDataset>
+				<rowGroup name="CONCAT(PS.`CODIGOSERVICIO`, &quot; ||| &quot;,S.`DESCRIPCION`, &quot; ||| UND: &quot;,S.`UNIDAD`)" width="334">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{CONCAT(PS.`CODIGOSERVICIO`, " ||| ",S.`DESCRIPCION`, " ||| UND: ",S.`UNIDAD`)}]]></bucketExpression>
+					</bucket>
+					<crosstabRowHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<textField>
-								<reportElement x="0" y="0" width="36" height="20" uuid="b0325bfa-2354-4543-b83d-d09a78a30e83"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="8"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{CODIGO}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="121" uuid="802b8793-93a4-4d46-abc4-d9059581903a">
-						<jr:columnHeader style="table 6_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="121" height="30" uuid="9a34dfaa-77a9-4a45-b997-915bcee0dedb"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="8"/>
-								</textElement>
-								<text><![CDATA[DESCRIPCION]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="table 6_TD" height="20" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="121" height="20" uuid="8a5436cf-4edb-4bb7-b83a-a309345c34c1"/>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="334" height="25" uuid="5e19c8ca-7fb3-4c52-b82f-4279d539580f"/>
 								<textElement textAlignment="Left" verticalAlignment="Middle">
-									<font size="8"/>
+									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{DESCRIPCION}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{CONCAT(PS.`CODIGOSERVICIO`, " ||| ",S.`DESCRIPCION`, " ||| UND: ",S.`UNIDAD`)}]]></textFieldExpression>
 							</textField>
-						</jr:detailCell>
-					</jr:column>
-					<jr:column width="31" uuid="04fb7025-31cc-44fe-bf25-91695c8897dc">
-						<jr:columnHeader style="table 6_CH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="31" height="30" uuid="92fb552c-f992-475b-b5c5-8db7f01cf759"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="8"/>
-								</textElement>
-								<text><![CDATA[UND]]></text>
-							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="table 6_TD" height="20" rowSpan="1">
+						</cellContents>
+					</crosstabRowHeader>
+					<crosstabTotalRowHeader>
+						<cellContents/>
+					</crosstabTotalRowHeader>
+				</rowGroup>
+				<columnGroup name="PUNTO" height="30" totalPosition="End">
+					<bucket class="java.lang.String">
+						<bucketExpression><![CDATA[$F{PUNTO}]]></bucketExpression>
+					</bucket>
+					<crosstabColumnHeader>
+						<cellContents backcolor="#F0F8FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<textField>
-								<reportElement x="0" y="0" width="31" height="20" uuid="eca81159-7fe2-4648-877b-7d592706e9fc"/>
+								<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="30" uuid="df938812-cea2-4af4-97e6-ec530b999f3a"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="8"/>
+									<font size="6"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{UNIDAD}]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$V{PUNTO}]]></textFieldExpression>
 							</textField>
-						</jr:detailCell>
-					</jr:column>
-				</jr:table>
-			</componentElement>
-			<componentElement>
-				<reportElement key="table 7" style="table 7" x="187" y="0" width="37" height="125" uuid="ac2ab3ef-5aa9-43dc-bc9e-81d6cb10ddcc"/>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="PSD2" uuid="64e81616-0a0f-4700-8bda-202905538a29">
-						<datasetParameter name="CODIGOFLC">
-							<datasetParameterExpression><![CDATA[$P{CODIGOFLC}]]></datasetParameterExpression>
-						</datasetParameter>
-						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					</datasetRun>
-					<jr:column width="52" uuid="429191fd-6dd2-4c34-8f83-a854a6342ec5">
-						<jr:columnHeader style="table 7_CH" height="30" rowSpan="1">
+						</cellContents>
+					</crosstabColumnHeader>
+					<crosstabTotalColumnHeader>
+						<cellContents backcolor="#BFE1FF" mode="Opaque">
+							<box>
+								<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+							</box>
 							<staticText>
-								<reportElement x="0" y="0" width="52" height="30" uuid="38b03ee4-2676-4f3a-9dda-ad3eaf7fd922"/>
+								<reportElement x="0" y="0" width="61" height="30" uuid="cbb13b45-3415-4709-8ed2-01866fb2eae1"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="8"/>
+									<font size="6"/>
 								</textElement>
 								<text><![CDATA[TOTAL
 EJECUTADO]]></text>
 							</staticText>
-						</jr:columnHeader>
-						<jr:detailCell style="table 7_TD" height="20" rowSpan="1">
-							<textField>
-								<reportElement x="0" y="0" width="52" height="20" uuid="af0952e8-8c68-4edf-b186-fa442075ccb2"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font size="8"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{COUNT(*)}]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-				</jr:table>
-			</componentElement>
+						</cellContents>
+					</crosstabTotalColumnHeader>
+				</columnGroup>
+				<measure name="CANTIDADMeasure" class="java.lang.Integer" calculation="Sum">
+					<measureExpression><![CDATA[$F{CANTIDAD}]]></measureExpression>
+				</measure>
+				<crosstabCell width="50" height="25">
+					<cellContents>
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="64ec70e5-1c0d-4997-b320-a81af01406b5"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{CANTIDADMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell height="25" rowTotalGroup="CONCAT(PS.`CODIGOSERVICIO`, &quot; ||| &quot;,S.`DESCRIPCION`, &quot; ||| UND: &quot;,S.`UNIDAD`)">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="025bb688-2796-45bf-a81e-aca3392d1e85"/>
+							<textFieldExpression><![CDATA[$V{CANTIDADMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell width="61" columnTotalGroup="PUNTO">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="61" height="25" uuid="84d70cd5-ac13-448f-98ad-1d5207f5a7a5"/>
+							<textElement textAlignment="Center" verticalAlignment="Middle">
+								<font size="6"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$V{CANTIDADMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+				<crosstabCell rowTotalGroup="CONCAT(PS.`CODIGOSERVICIO`, &quot; ||| &quot;,S.`DESCRIPCION`, &quot; ||| UND: &quot;,S.`UNIDAD`)" columnTotalGroup="PUNTO">
+					<cellContents backcolor="#BFE1FF" mode="Opaque">
+						<box>
+							<pen lineWidth="0.5" lineStyle="Solid" lineColor="#000000"/>
+						</box>
+						<textField>
+							<reportElement style="Crosstab Data Text" x="0" y="0" width="50" height="25" uuid="80c776d6-7542-4bca-9ac9-f43da4223d3e"/>
+							<textFieldExpression><![CDATA[$V{CANTIDADMeasure}]]></textFieldExpression>
+						</textField>
+					</cellContents>
+				</crosstabCell>
+			</crosstab>
+			<staticText>
+				<reportElement x="1" y="5" width="231" height="20" uuid="7d7bc333-09b9-4b8f-8254-48ec0e7bf369"/>
+				<text><![CDATA[CODIGO     |||     DESCRIPCION     |||     UNIDAD]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>
